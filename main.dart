@@ -38,6 +38,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  void clearDropdowns() {
+    setState(() {
+      _status = null;
+      // Add any other dropdowns you want to clear here
+    });
+  }
+
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late File? _image = null;
   final picker = ImagePicker();
@@ -45,8 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _vendorController = TextEditingController();
   final TextEditingController _transactionDateController =
   TextEditingController();
-  final TextEditingController _businessPurposeController =
-  TextEditingController();
+  late String? _businessPurposeController;
   final TextEditingController _expenseTypeController =
   TextEditingController();
   final TextEditingController _dollarsController = TextEditingController();
@@ -127,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     final now = DateTime.now().toString();
-    final filename = 'expense-report-image-$now.jpg';
+    final filename = 'expense-report-image-$now.jpeg';
 
     try {
       final bytes = await image.readAsBytes();
@@ -162,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
       final employee = _employeeController.text;
       final vendor = _vendorController.text;
       final transactionDate = _transactionDateController.text;
-      final businessPurpose = _businessPurposeController.text;
+      final businessPurpose = _businessPurposeController;
       final expenseType = _expenseTypeController.text;
       final dollars = _dollarsController.text;
 
@@ -204,17 +212,17 @@ class _MyHomePageState extends State<MyHomePage> {
       }
 
       // Send the form data to the PHP API
-      final url = 'https://your-api-endpoint.com/upload_expense_report.php';
+      final url = 'https://appdata.netstoic.com/expense_rpt/adddata.php';
       final response = await http.post(Uri.parse(url), body: {
         'company': _company,
         'employee': employee,
         'vendor': vendor,
-        'transaction_date': transactionDate,
+        'trans_date': transactionDate,
         'business_purpose': businessPurpose,
-        'gl': _gl,
         'expense_type': expenseType,
+        'gl': _gl,
         'dollars': dollars,
-        'corporate_credit_card': _corporateCreditCard,
+        'corp_cc': _corporateCreditCard,
         'status': _status,
       });
 
@@ -306,7 +314,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   }).toList(),
                   onChanged: (value) {
                     setState(() {
-                      _businessPurposeController.text = value!;
+                      _businessPurposeController = value!;
                       switch (value) {
                         case 'Employee Meals':
                           _gl = '7817-800';
@@ -438,19 +446,19 @@ class _MyHomePageState extends State<MyHomePage> {
                         final imageUrl = await uploadImageToS3(_image!);
 
                         // Submit the form data and the image URL to the PHP API
-                        final url = 'https://your-api-endpoint.com/upload_expense_report.php';
+                        final url = 'https://appdata.netstoic.com/expense_rpt/adddata.php';
                         final response = await http.post(Uri.parse(url), body: {
                           'company': _company,
                           'employee': _employeeController.text,
                           'vendor': _vendorController.text,
-                          'transaction_date': _transactionDateController.text,
-                          'business_purpose': _businessPurposeController.text,
-                          'gl': _gl,
+                          'trans_date': _transactionDateController.text,
+                          'business_purpose': _businessPurposeController,
                           'expense_type': _expenseTypeController.text,
+                          'gl': _gl,
                           'dollars': _dollarsController.text,
-                          'corporate_credit_card': _corporateCreditCard,
+                          'corp_cc': _corporateCreditCard,
+                          'img_url': imageUrl,
                           'status': _status,
-                          'image_url': imageUrl,
                         });
 
                         if (response.statusCode == 200) {
@@ -462,7 +470,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           _expenseTypeController.clear();
                           _dollarsController.clear();
                           setState(() {_image = null;});
-                          setState(() => {_status = null});
+                          clearDropdowns();
+                          //_status = null;
+                          _corporateCreditCard = null;
+                          _businessPurposeController = null;
+
 
                           print('Form data submitted successfully');
                         } else {
