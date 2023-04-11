@@ -12,13 +12,22 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Expense Report App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: darkTheme,
       home: MyHomePage(title: 'Expense Report Form'),
     );
   }
 }
+
+final ThemeData darkTheme = ThemeData(
+  brightness: Brightness.dark,
+  scaffoldBackgroundColor: Colors.black,
+  primaryColor: Colors.white,
+  accentColor: Colors.white,
+  textTheme: TextTheme(
+    headline6: TextStyle(color: Colors.white),
+    bodyText2: TextStyle(color: Colors.white),
+  ),
+);
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -111,14 +120,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<String?> uploadImageToS3(File image) async {
     final minio = Minio(
-      endPoint: 'your-minio-endpoint',
-      accessKey: 'YOUR_ACCESS_KEY',
-      secretKey: 'YOUR_SECRET_KEY',
+      endPoint: 's3.us-east-1.wasabisys.com',
+      accessKey: 'U838PX8RD5761WY7IS7D',
+      secretKey: 'N4mUU7AgOc7iPwGaRKkDnGgIDEpytrLCB9JAb5oi',
       useSSL: true,
     );
 
     final now = DateTime.now().toString();
-    final filename = 'expense-report-image-$now';
+    final filename = 'expense-report-image-$now.jpg';
 
     try {
       final bytes = await image.readAsBytes();
@@ -127,11 +136,11 @@ class _MyHomePageState extends State<MyHomePage> {
       // Set the Expires header to 15 minutes in the future
       final expires = DateTime.now().add(Duration(minutes: 15)).toUtc().toIso8601String();
 
-      await minio.putObject('your-bucket-name', filename, stream,
+      await minio.putObject('appdevimages', filename, stream,
           metadata: {'Expires': expires});
 
-      final endpoint = 'https://your-minio-endpoint'; // Replace with your Minio server URL
-      final url = '$endpoint/your-bucket-name/$filename';
+      final endpoint = 'https://s3.us-east-1.wasabisys.com'; // Replace with your Minio server URL
+      final url = '$endpoint/appdevimages/$filename';
       return url;
     } catch (e) {
       print('Error uploading image to S3: $e');
@@ -445,6 +454,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         });
 
                         if (response.statusCode == 200) {
+                          // Clear the form fields
+                          //setState(() => _);
+                          _employeeController.clear();
+                          _vendorController.clear();
+                          _transactionDateController.clear();
+                          _expenseTypeController.clear();
+                          _dollarsController.clear();
+                          setState(() {_image = null;});
+                          setState(() => {_status = null});
+
                           print('Form data submitted successfully');
                         } else {
                           print('Error submitting form data: ${response.body}');
@@ -462,7 +481,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-
-
-
