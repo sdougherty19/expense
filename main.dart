@@ -50,10 +50,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _expenseTypeController =
   TextEditingController();
   final TextEditingController _dollarsController = TextEditingController();
-  late String _company = 'Profile Extrusion Company';
-  late String _gl;
-  late String _corporateCreditCard;
-  late String _status;
+  late String? _company = 'Profile Extrusion Company';
+  late String? _gl;
+  late String? _corporateCreditCard;
+  late String? _status;
 
   List<String> _companies = [
     'Profile Extrusion Company',
