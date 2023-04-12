@@ -56,14 +56,14 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _vendorController = TextEditingController();
   final TextEditingController _transactionDateController =
   TextEditingController();
-  late String? _businessPurposeController;
+  late String? _businessPurposeController = null;
   final TextEditingController _expenseTypeController =
   TextEditingController();
   final TextEditingController _dollarsController = TextEditingController();
   late String? _company = 'Profile Extrusion Company';
   late String? _gl;
-  late String? _corporateCreditCard;
-  late String? _status;
+  late String? _corporateCreditCard = null;
+  late String? _status = null;
 
   List<String?> _companies = [
     'Profile Extrusion Company',
@@ -306,7 +306,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(height: 16),
                 Text('Business Purpose'),
                 DropdownButtonFormField<String?>(
-                  value: null,
+                  value: _businessPurposeController,
                   items: _businessPurposes.map((businessPurpose) {
                     return DropdownMenuItem<String?>(
                       value: businessPurpose,
@@ -374,7 +374,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(height: 16),
                 Text('Corporate Credit Card'),
                 DropdownButtonFormField<String?>(
-                  value: null,
+                  value: _corporateCreditCard,
                   items: _corporateCreditCards.map((creditCard) {
                     return DropdownMenuItem<String?>(
                       value: creditCard,
@@ -398,7 +398,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                 Text('Status'),
                 DropdownButtonFormField<String?>(
-                  value: null,
+                  value: _status,
                   items: _statuses.map((status) {
                     return DropdownMenuItem<String?>(
                       value: status,
