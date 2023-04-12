@@ -11,9 +11,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Expense Report App',
+      title: 'Expense Report',
       theme: darkTheme,
-      home: MyHomePage(title: 'Expense Report Form'),
+      home: MyHomePage(title: 'Expense Report Entry Form'),
     );
   }
 }
@@ -42,6 +42,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void clearDropdowns() {
     setState(() {
       _status = null;
+      _corporateCreditCard = null;
+      _businessPurposeController = null;
       // Add any other dropdowns you want to clear here
     });
   }
@@ -63,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late String? _corporateCreditCard;
   late String? _status;
 
-  List<String> _companies = [
+  List<String?> _companies = [
     'Profile Extrusion Company',
     'GPI',
     'GPI2',
@@ -76,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
     'CAT5 Construction'
   ];
 
-  List<String> _businessPurposes = [
+  List<String?> _businessPurposes = [
     'Employee Meals',
     'Lodging',
     'Miscellaneous',
@@ -90,12 +92,12 @@ class _MyHomePageState extends State<MyHomePage> {
     'Corporate and Licensing Fees'
   ];
 
-  List<String> _corporateCreditCards = [
+  List<String?> _corporateCreditCards = [
     'Yes - a Credit Card was Used',
     'No - Personal Expense'
   ];
 
-  List<String> _statuses = [
+  List<String?> _statuses = [
     'On Hold',
     'Ready for Processing',
     'Returned for Review',
@@ -155,14 +157,6 @@ class _MyHomePageState extends State<MyHomePage> {
       return null;
     }
   }
-
-
-
-
-
-
-
-
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
@@ -227,7 +221,14 @@ class _MyHomePageState extends State<MyHomePage> {
       });
 
       if (response.statusCode == 200) {
+        clearDropdowns();
+        // _status = null;
+        // _corporateCreditCard = null;
+        // _businessPurposeController = null;
         print('Form data submitted successfully');
+        // _statuses = 'Test' as List<String>;
+        // _corporateCreditCards.clear();
+        // _businessPurposes.clear();
       } else {
         print('Error submitting form data: ${response.body}');
       }
@@ -249,12 +250,12 @@ class _MyHomePageState extends State<MyHomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text('Company'),
-                DropdownButtonFormField<String>(
+                DropdownButtonFormField<String?>(
                   value: _company,
                   items: _companies.map((company) {
-                    return DropdownMenuItem<String>(
+                    return DropdownMenuItem<String?>(
                       value: company,
-                      child: Text(company),
+                      child: Text(company!),
                     );
                   }).toList(),
                   onChanged: (value) {
@@ -304,12 +305,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 SizedBox(height: 16),
                 Text('Business Purpose'),
-                DropdownButtonFormField<String>(
+                DropdownButtonFormField<String?>(
                   value: null,
                   items: _businessPurposes.map((businessPurpose) {
-                    return DropdownMenuItem<String>(
+                    return DropdownMenuItem<String?>(
                       value: businessPurpose,
-                      child: Text(businessPurpose),
+                      child: Text(businessPurpose!),
                     );
                   }).toList(),
                   onChanged: (value) {
@@ -372,15 +373,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 SizedBox(height: 16),
                 Text('Corporate Credit Card'),
-                DropdownButtonFormField<String>(
+                DropdownButtonFormField<String?>(
                   value: null,
                   items: _corporateCreditCards.map((creditCard) {
-                    return DropdownMenuItem<String>(
+                    return DropdownMenuItem<String?>(
                       value: creditCard,
-                      child: Text(creditCard),
+                      child: Text(creditCard!),
                     );
                   }).toList(),
-                  onChanged: (value) {
+                  onChanged: (String? value) {
                     setState(() {
                       _corporateCreditCard = value!;
                     });
@@ -396,15 +397,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
                 Text('Status'),
-                DropdownButtonFormField<String>(
+                DropdownButtonFormField<String?>(
                   value: null,
                   items: _statuses.map((status) {
-                    return DropdownMenuItem<String>(
+                    return DropdownMenuItem<String?>(
                       value: status,
-                      child: Text(status),
+                      child: Text(status!),
                     );
                   }).toList(),
-                  onChanged: (value) {
+                  onChanged: (String? value) {
                     setState(() {
                       _status = value!;
                     });
@@ -464,18 +465,19 @@ class _MyHomePageState extends State<MyHomePage> {
                         if (response.statusCode == 200) {
                           // Clear the form fields
                           //setState(() => _);
-                          _employeeController.clear();
+                          //_employeeController.clear();
                           _vendorController.clear();
                           _transactionDateController.clear();
                           _expenseTypeController.clear();
                           _dollarsController.clear();
                           setState(() {_image = null;});
                           clearDropdowns();
-                          //_status = null;
-                          _corporateCreditCard = null;
-                          _businessPurposeController = null;
-
-
+                          // _status = null;
+                          // _corporateCreditCard = null;
+                          // _businessPurposeController = null;
+                          // _statuses.clear();
+                          // _corporateCreditCards.clear();
+                          // _businessPurposes.clear();
                           print('Form data submitted successfully');
                         } else {
                           print('Error submitting form data: ${response.body}');
