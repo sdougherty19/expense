@@ -1,4 +1,4 @@
-import 'dart:convert';
+//Written by Sean Dougherty - HST Innovations. Copyright 2023. All Rights Reserved.
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -135,8 +135,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<String?> uploadImageToS3(File image) async {
     final minio = Minio(
       endPoint: 's3.us-east-1.wasabisys.com',
-      accessKey: 'U838PX8RD5761WY7IS7D',
-      secretKey: 'N4mUU7AgOc7iPwGaRKkDnGgIDEpytrLCB9JAb5oi',
+      accessKey: 'Key',
+      secretKey: 'Other Key',
       useSSL: true,
     );
 
@@ -210,7 +210,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }
 
       // Send the form data to the PHP API
-      final url = 'https://appdata.netstoic.com/expense_rpt/adddata.php';
+      final url = 'https://yoururl';
       final response = await http.post(Uri.parse(url), body: {
         'company': _company,
         'employee': employee,
@@ -488,7 +488,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       if (_formKey.currentState!.validate()) {
                         // Upload the image to S3 and get its URL
                         //final imageUrl = await uploadImageToS3(_image!);
-                        _loading = true; // Show the loading indicator
+                        setState(() {
+                          _loading = true; // Show the loading indicator
+                        });
 
                         String? imageUrl;
                         if (_image != null) {
@@ -496,7 +498,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         }
 
                         // Submit the form data and the image URL to the PHP API
-                        final url = 'https://appdata.netstoic.com/expense_rpt/adddata.php';
+                        final url = 'https://nyb';
                         final response = await http.post(Uri.parse(url), body: {
                           'company': _company,
                           'employee': _employeeController.text,
