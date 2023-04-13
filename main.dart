@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:minio/minio.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 void main() => runApp(MyApp());
 
@@ -38,7 +40,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
+  bool _loading = false;
   void clearDropdowns() {
     setState(() {
       _status = null;
@@ -64,6 +66,8 @@ class _MyHomePageState extends State<MyHomePage> {
   late String? _gl;
   late String? _corporateCreditCard = null;
   late String? _status = null;
+
+
 
   List<String?> _companies = [
     'Profile Extrusion Company',
@@ -237,7 +241,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ModalProgressHUD(
+        inAsyncCall: _loading,
+        child: Scaffold(
+   // return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
@@ -293,16 +300,52 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
                 SizedBox(height: 16),
+
                 Text('Transaction Date'),
-                TextFormField(
-                  controller: _transactionDateController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a transaction date';
+                TextButton(
+                  onPressed: () async {
+                    // Show the date picker
+                    final DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime.now(),
+                    );
+
+                    // Update the _transactionDateController with the selected date
+                    if (pickedDate != null) {
+                      setState(() {
+                        _transactionDateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+                      });
                     }
-                    return null;
                   },
+                  child: Text(
+                    _transactionDateController.text.isNotEmpty
+                        ? _transactionDateController.text
+                        : 'Select the Date of Your Transaction',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    backgroundColor: Colors.grey.shade200,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
                 ),
+
+
+                // SizedBox(height: 16),
+                // Text('Transaction Date'),
+                // TextFormField(
+                //   controller: _transactionDateController,
+                //   validator: (value) {
+                //     if (value == null || value.isEmpty) {
+                //       return 'Please enter a transaction date';
+                //     }
+                //     return null;
+                //   },
+                // ),
                 SizedBox(height: 16),
                 Text('Business Purpose'),
                 DropdownButtonFormField<String?>(
@@ -444,7 +487,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         // Upload the image to S3 and get its URL
-                        final imageUrl = await uploadImageToS3(_image!);
+                        //final imageUrl = await uploadImageToS3(_image!);
+                        _loading = true; // Show the loading indicator
+
+                        String? imageUrl;
+                        if (_image != null) {
+                          imageUrl = await uploadImageToS3(_image!);
+                        }
 
                         // Submit the form data and the image URL to the PHP API
                         final url = 'https://appdata.netstoic.com/expense_rpt/adddata.php';
@@ -458,11 +507,15 @@ class _MyHomePageState extends State<MyHomePage> {
                           'gl': _gl,
                           'dollars': _dollarsController.text,
                           'corp_cc': _corporateCreditCard,
-                          'img_url': imageUrl,
+                          if (imageUrl != null) 'img_url': imageUrl, // Add img_url only if imageUrl is not null
+                          //'img_url': imageUrl,
                           'status': _status,
                         });
 
                         if (response.statusCode == 200) {
+                          setState(() {
+                            _loading = false; // Hide the loading indicator
+                          });
                           // Clear the form fields
                           //setState(() => _);
                           //_employeeController.clear();
@@ -492,6 +545,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
+    )
     );
   }
 }
