@@ -6,8 +6,19 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:minio/minio.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:expense_report/AppDrawer.dart';
+import 'package:expense_report/login_screen.dart';
 
 void main() => runApp(MyApp());
+
+// void main() {
+//   runApp(MaterialApp(
+//     debugShowCheckedModeBanner: false,
+//     theme: darkTheme,
+//     home: LoginScreen(),
+//   ));
+//}
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -103,9 +114,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<String?> _statuses = [
     'On Hold',
-    'Ready for Processing',
-    'Returned for Review',
-    'Approved'
+    'Ready for Processing'
+    //'Returned for Review',
+    //'Approved'
   ];
 
   Future getImageFromCamera() async {
@@ -135,8 +146,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<String?> uploadImageToS3(File image) async {
     final minio = Minio(
       endPoint: 's3.us-east-1.wasabisys.com',
-      accessKey: 'Key',
-      secretKey: 'Other Key',
+      accessKey: 'U838PX8RD5761WY7IS7D',
+      secretKey: 'N4mUU7AgOc7iPwGaRKkDnGgIDEpytrLCB9JAb5oi',
       useSSL: true,
     );
 
@@ -210,7 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }
 
       // Send the form data to the PHP API
-      final url = 'https://yoururl';
+      final url = 'https://appdata.netstoic.com/expense_rpt/adddata.php';
       final response = await http.post(Uri.parse(url), body: {
         'company': _company,
         'employee': employee,
@@ -248,6 +259,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
+          drawer: AppDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -255,8 +267,11 @@ class _MyHomePageState extends State<MyHomePage> {
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text('Company'),
+              children: [
+                const DefaultTextStyle(
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  child: Text('Company'),
+                ),
                 DropdownButtonFormField<String?>(
                   value: _company,
                   items: _companies.map((company) {
@@ -277,8 +292,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
-                Text('Employee'),
+                const SizedBox(height: 16),
+                RichText(
+                  text: const TextSpan(
+                    text: 'Employee',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
                 TextFormField(
                   controller: _employeeController,
                   validator: (value) {
@@ -288,8 +308,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
-                Text('Vendor'),
+
+                const SizedBox(height: 16),
+                RichText(
+                  text: const TextSpan(
+                    text: 'Vendor',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
                 TextFormField(
                   controller: _vendorController,
                   validator: (value) {
@@ -299,9 +325,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-                Text('Transaction Date'),
+                RichText(
+                  text: const TextSpan(
+                    text: 'Transaction Date',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
                 TextButton(
                   onPressed: () async {
                     // Show the date picker
@@ -346,8 +377,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 //     return null;
                 //   },
                 // ),
-                SizedBox(height: 16),
-                Text('Business Purpose'),
+                const SizedBox(height: 16),
+                RichText(
+                  text: const TextSpan(
+                    text: 'Business Purpose',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
                 DropdownButtonFormField<String?>(
                   value: _businessPurposeController,
                   items: _businessPurposes.map((businessPurpose) {
@@ -403,19 +439,34 @@ class _MyHomePageState extends State<MyHomePage> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
-                Text('Expense Type'),
+                const SizedBox(height: 16),
+                RichText(
+                  text: const TextSpan(
+                    text: 'Expense Type',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
                 TextFormField(
                   controller: _expenseTypeController,
                 ),
                 SizedBox(height: 16),
-                Text('Dollars'),
+                RichText(
+                  text: const TextSpan(
+                    text: 'Dollars',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
                 TextFormField(
                   controller: _dollarsController,
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 16),
-                Text('Corporate Credit Card'),
+                RichText(
+                  text: const TextSpan(
+                    text: 'Corporate Credit Card',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
                 DropdownButtonFormField<String?>(
                   value: _corporateCreditCard,
                   items: _corporateCreditCards.map((creditCard) {
@@ -436,10 +487,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
-
-
-                Text('Status'),
+                const SizedBox(height: 16),
+                RichText(
+                  text: const TextSpan(
+                    text: 'Status',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
                 DropdownButtonFormField<String?>(
                   value: _status,
                   items: _statuses.map((status) {
@@ -461,7 +515,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
                 SizedBox(height: 16),
-                Text('Attach Receipt Image'),
+                RichText(
+                  text: const TextSpan(
+                    text: 'Attach Receipt Image',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -498,7 +557,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         }
 
                         // Submit the form data and the image URL to the PHP API
-                        final url = 'https://nyb';
+                        final url = 'https://appdata.netstoic.com/expense_rpt/adddata.php';
                         final response = await http.post(Uri.parse(url), body: {
                           'company': _company,
                           'employee': _employeeController.text,
