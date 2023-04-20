@@ -70,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _transactionDateController =
   TextEditingController();
   late String? _businessPurposeController = null;
-  final TextEditingController _expenseTypeController =
+  final TextEditingController _itemDescController =
   TextEditingController();
   final TextEditingController _dollarsController = TextEditingController();
   late String? _company = 'Profile Extrusion Company';
@@ -98,6 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
     'Lodging',
     'Miscellaneous',
     'Rental Car',
+    'Parking',
     'Corporate Contributions',
     'Personal Car Mileage',
     'Air Travel',
@@ -108,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   List<String?> _corporateCreditCards = [
-    'Yes - a Credit Card was Used',
+    'Yes - a Corporate Credit Card was Used',
     'No - Personal Expense'
   ];
 
@@ -180,7 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
       final vendor = _vendorController.text;
       final transactionDate = _transactionDateController.text;
       final businessPurpose = _businessPurposeController;
-      final expenseType = _expenseTypeController.text;
+      final itemDesc = _itemDescController.text;
       final dollars = _dollarsController.text;
 
       // Determine the GL value based on the selected business purpose
@@ -213,10 +214,13 @@ class _MyHomePageState extends State<MyHomePage> {
           _gl = '7822-800';
           break;
         case 'Small Tools':
-          _gl = '7818-800';
+          _gl = '7606-800';
           break;
         case 'Corporate and Licensing Fees':
           _gl = '7682-800';
+          break;
+        case 'Parking':
+          _gl = '7816-800';
           break;
       }
 
@@ -228,7 +232,7 @@ class _MyHomePageState extends State<MyHomePage> {
         'vendor': vendor,
         'trans_date': transactionDate,
         'business_purpose': businessPurpose,
-        'expense_type': expenseType,
+        'item_desc': itemDesc,
         'gl': _gl,
         'dollars': dollars,
         'corp_cc': _corporateCreditCard,
@@ -301,6 +305,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 TextFormField(
                   controller: _employeeController,
+                  textCapitalization: TextCapitalization.words,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter an employee';
@@ -318,6 +323,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 TextFormField(
                   controller: _vendorController,
+                  textCapitalization: TextCapitalization.words,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a vendor';
@@ -429,6 +435,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         case 'Corporate and Licensing Fees':
                           _gl = '7682-800';
                           break;
+                        case 'Parking':
+                          _gl = '7816-800';
+                          break;
                       }
                     });
                   },
@@ -442,12 +451,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 const SizedBox(height: 16),
                 RichText(
                   text: const TextSpan(
-                    text: 'Expense Type',
+                    text: 'Item Description',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
                 TextFormField(
-                  controller: _expenseTypeController,
+                  controller: _itemDescController,
+                  textCapitalization: TextCapitalization.sentences,
                 ),
                 SizedBox(height: 16),
                 RichText(
@@ -564,7 +574,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           'vendor': _vendorController.text,
                           'trans_date': _transactionDateController.text,
                           'business_purpose': _businessPurposeController,
-                          'expense_type': _expenseTypeController.text,
+                          'item_desc': _itemDescController.text,
                           'gl': _gl,
                           'dollars': _dollarsController.text,
                           'corp_cc': _corporateCreditCard,
@@ -582,7 +592,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           //_employeeController.clear();
                           _vendorController.clear();
                           _transactionDateController.clear();
-                          _expenseTypeController.clear();
+                          _itemDescController.clear();
                           _dollarsController.clear();
                           setState(() {_image = null;});
                           clearDropdowns();
@@ -592,6 +602,14 @@ class _MyHomePageState extends State<MyHomePage> {
                           // _statuses.clear();
                           // _corporateCreditCards.clear();
                           // _businessPurposes.clear();
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Expense submitted successfully!'),
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+
                           print('Form data submitted successfully');
                         } else {
                           print('Error submitting form data: ${response.body}');
