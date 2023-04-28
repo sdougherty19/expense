@@ -9,11 +9,18 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:expense_report/AppDrawer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
+import 'package:provider/provider.dart';
+import 'auth_provider.dart';
+import 'login_screen.dart';
 
+import 'package:expense_report/Archive/OLDlogin_screen.dart';
 
-import 'package:expense_report/login_screen.dart';
-
-void main() => runApp(MyApp());
+void main() => runApp(
+      ChangeNotifierProvider(
+        create: (context) => AuthProvider(),
+        child: MyApp(),
+      ),
+    );
 
 // void main() {
 //   runApp(MaterialApp(
@@ -29,7 +36,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Expense Report',
       theme: darkTheme,
-      home: MyHomePage(title: 'Expense Report Entry Form'),
+      //home: MyHomePage(title: 'Expense Report Entry Form'),
+      home: LoginScreen(),
+      routes: {
+        '/main': (context) => MyHomePage(title: 'Flutter Demo Home Page'),
+      },
     );
   }
 }
@@ -46,8 +57,9 @@ final ThemeData darkTheme = ThemeData(
 );
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.title, required this.employeeName}) : super(key: key);
   final String title;
+  final String employeeName;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -62,6 +74,8 @@ class _MyHomePageState extends State<MyHomePage> {
       _businessPurposeController = null;
       // Add any other dropdowns you want to clear here
     });
+    int _counter = 0;
+    final employeeController = TextEditingController();
   }
 
   bool isImageFile(String filePath) {
@@ -191,7 +205,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       // Set the Expires header to 15 minutes in the future
       final expires =
-      DateTime.now().add(Duration(minutes: 15)).toUtc().toIso8601String();
+          DateTime.now().add(Duration(minutes: 15)).toUtc().toIso8601String();
 
       await minio.putObject('appdevimages', filename, stream,
           metadata: {'Expires': expires});
@@ -205,8 +219,6 @@ class _MyHomePageState extends State<MyHomePage> {
       return null;
     }
   }
-
-
 
   // Future<String?> uploadImageToS3(File image) async {
   //   final minio = Minio(
@@ -718,13 +730,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     Center(
                       child: _file == null
                           ? (_image == null
-                          ? Text('No file or image selected.')
-                          : Image.file(_image!))
+                              ? Text('No file or image selected.')
+                              : Image.file(_image!))
                           : (isImageFile(_file!.path)
-                          ? Image.file(_file!)
-                          : Text('Selected File: ${path.basename(_file!.path)}')),
+                              ? Image.file(_file!)
+                              : Text(
+                                  'Selected File: ${path.basename(_file!.path)}')),
                     ),
-
 
                     SizedBox(height: 16),
                     // Center(
