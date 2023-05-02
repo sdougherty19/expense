@@ -1,5 +1,6 @@
 //Written by Sean Dougherty - HST Innovations. Copyright 2023. All Rights Reserved.
 import 'dart:io';
+import 'package:expense_report/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -11,9 +12,21 @@ import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
 
 
-import 'package:expense_report/Archive/login_screen.dart';
+//import 'package:expense_report/Archive/OLDlogin_screen.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
+import 'auth_provider.dart';
+
+
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => AuthProvider(),
+      child: MyApp(),
+    ),
+  );
+}
+//void main() => runApp(MyApp());
 
 // void main() {
 //   runApp(MaterialApp(
@@ -29,7 +42,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Expense Report',
       theme: darkTheme,
-      home: MyHomePage(title: 'Expense Report Entry Form'),
+      //home: MyHomePage(title: 'Expense Report Entry Form'),
+      home: LoginScreen(),
+      routes: {
+        '/main': (context) => MyHomePage(title: 'Expense Report Form'),
+      },
     );
   }
 }
@@ -46,14 +63,20 @@ final ThemeData darkTheme = ThemeData(
 );
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.title, String? employeeName}) //: super(key: key);
+      : employeeName = employeeName ?? '',
+        super(key: key);
+
   final String title;
+  final String? employeeName;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+  final TextEditingController employeeController = TextEditingController();
   bool _loading = false;
   void clearDropdowns() {
     setState(() {
@@ -63,7 +86,19 @@ class _MyHomePageState extends State<MyHomePage> {
       // Add any other dropdowns you want to clear here
     });
   }
+  @override
+  void initState() {
+    super.initState();
+    if (widget.employeeName != null) {
+      employeeController.text = widget.employeeName!;
+    }
+  }
 
+  void _incrementCounter() {
+    setState(() {
+      _counter = _counter + 2;
+    });
+  }
   bool isImageFile(String filePath) {
     final fileExtension = path.extension(filePath).toLowerCase();
     return ['.jpg', '.jpeg', '.png', '.gif', '.bmp'].contains(fileExtension);
@@ -243,7 +278,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       // Get the values from the form fields
-      final employee = _employeeController.text;
+      final employee = employeeController.text;
       final vendor = _vendorController.text;
       final transactionDate = _transactionDateController.text;
       final businessPurpose = _businessPurposeController;
@@ -357,7 +392,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           'https://appdata.netstoic.com/expense_rpt/adddata.php';
                       final response = await http.post(Uri.parse(url), body: {
                         'company': _company,
-                        'employee': _employeeController.text,
+                        'employee': employeeController.text,
                         'vendor': _vendorController.text,
                         'trans_date': _transactionDateController.text,
                         'business_purpose': _businessPurposeController,
@@ -450,7 +485,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     TextFormField(
-                      controller: _employeeController,
+                      readOnly: true,
+                      controller: employeeController,
                       textCapitalization: TextCapitalization.words,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -459,6 +495,13 @@ class _MyHomePageState extends State<MyHomePage> {
                         return null;
                       },
                     ),
+                    // TextField(
+                    //   controller: employeeController,
+                    //   decoration: InputDecoration(
+                    //     border: OutlineInputBorder(),
+                    //     labelText: 'Employee',
+                    //   ),
+                    // ),
 
                     const SizedBox(height: 16),
                     RichText(
