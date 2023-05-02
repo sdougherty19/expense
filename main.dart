@@ -1,4 +1,5 @@
 //Written by Sean Dougherty - HST Innovations. Copyright 2023. All Rights Reserved.
+import 'dart:async';
 import 'dart:io';
 import 'package:expense_report/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -37,16 +38,51 @@ void main() {
 //}
 
 class MyApp extends StatelessWidget {
+
+  //--Delete old code once validated
+// class MyApp extends StatefulWidget {
+//   @override
+//   _MyAppState createState() => _MyAppState();
+// }
+//
+// class _MyAppState extends State<MyApp> {
+//   Timer? _timer;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _timer = Timer.periodic(Duration(seconds: 10), (timer) {
+  //     Provider.of<AuthProvider>(context, listen: false).checkPassword();
+  //   });
+  // }
+
+  // @override
+  // void dispose() {
+  //   _timer?.cancel();
+  //   super.dispose();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Expense Report',
       theme: darkTheme,
+        home: Consumer<AuthProvider>(
+        builder: (context, authProvider, child) {
+      if (authProvider.user == null) {
+        return LoginScreen();
+      } else {
+        final employeeName = authProvider.user!.name;
+        return MyHomePage(title: 'Expense Report Entry Form', employeeName: employeeName);
+      }
+    },
+        )
+      //Old Code, Delete when validated
       //home: MyHomePage(title: 'Expense Report Entry Form'),
-      home: LoginScreen(),
-      routes: {
-        '/main': (context) => MyHomePage(title: 'Expense Report Form'),
-      },
+      // home: LoginScreen(),
+      // routes: {
+      //   '/main': (context) => MyHomePage(title: 'Expense Report Form'),
+      // },
     );
   }
 }
