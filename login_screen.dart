@@ -11,19 +11,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-
-  // void _submit() async {
-  //   try {
-  //     await Provider.of<AuthProvider>(context, listen: false).login(
-  //       _usernameController.text,
-  //       _passwordController.text,
-  //     );
-  //     Navigator.of(context).pushReplacementNamed('/main');
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context)
-  //         .showSnackBar(SnackBar(content: Text(e.toString())));
-  //   }
-  // }
   void _submit() async {
     try {
       await Provider.of<AuthProvider>(context, listen: false).login(
@@ -47,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
+      appBar: AppBar(title: Text('Login Below')),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
