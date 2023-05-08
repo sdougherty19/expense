@@ -13,7 +13,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
 
 
-//import 'package:expense_report/Archive/OLDlogin_screen.dart';
+
 import 'package:provider/provider.dart';
 
 import 'auth_provider.dart';
@@ -27,40 +27,8 @@ void main() {
     ),
   );
 }
-//void main() => runApp(MyApp());
-
-// void main() {
-//   runApp(MaterialApp(
-//     debugShowCheckedModeBanner: false,
-//     theme: darkTheme,
-//     home: LoginScreen(),
-//   ));
-//}
 
 class MyApp extends StatelessWidget {
-
-  //--Delete old code once validated
-// class MyApp extends StatefulWidget {
-//   @override
-//   _MyAppState createState() => _MyAppState();
-// }
-//
-// class _MyAppState extends State<MyApp> {
-//   Timer? _timer;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _timer = Timer.periodic(Duration(seconds: 10), (timer) {
-  //     Provider.of<AuthProvider>(context, listen: false).checkPassword();
-  //   });
-  // }
-
-  // @override
-  // void dispose() {
-  //   _timer?.cancel();
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -77,12 +45,6 @@ class MyApp extends StatelessWidget {
       }
     },
         )
-      //Old Code, Delete when validated
-      //home: MyHomePage(title: 'Expense Report Entry Form'),
-      // home: LoginScreen(),
-      // routes: {
-      //   '/main': (context) => MyHomePage(title: 'Expense Report Form'),
-      // },
     );
   }
 }
@@ -279,37 +241,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
-  // Future<String?> uploadImageToS3(File image) async {
-  //   final minio = Minio(
-  //     endPoint: 's3.us-east-1.wasabisys.com',
-  //     accessKey: 'U838PX8RD5761WY7IS7D',
-  //     secretKey: 'N4mUU7AgOc7iPwGaRKkDnGgIDEpytrLCB9JAb5oi',
-  //     useSSL: true,
-  //   );
-  //
-  //   final now = DateTime.now().toString();
-  //   final filename = 'expense-report-image-$now.jpeg';
-  //
-  //   try {
-  //     final bytes = await image.readAsBytes();
-  //     final stream = Stream.fromIterable([bytes]);
-  //
-  //     // Set the Expires header to 15 minutes in the future
-  //     final expires =
-  //         DateTime.now().add(Duration(minutes: 15)).toUtc().toIso8601String();
-  //
-  //     await minio.putObject('appdevimages', filename, stream,
-  //         metadata: {'Expires': expires});
-  //
-  //     final endpoint =
-  //         'https://s3.us-east-1.wasabisys.com'; // Replace with your Minio server URL
-  //     final url = '$endpoint/appdevimages/$filename';
-  //     return url;
-  //   } catch (e) {
-  //     print('Error uploading image to S3: $e');
-  //     return null;
-  //   }
-  // }
+ 
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
@@ -531,13 +463,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         return null;
                       },
                     ),
-                    // TextField(
-                    //   controller: employeeController,
-                    //   decoration: InputDecoration(
-                    //     border: OutlineInputBorder(),
-                    //     labelText: 'Employee',
-                    //   ),
-                    // ),
+                    
 
                     const SizedBox(height: 16),
                     RichText(
@@ -598,17 +524,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
 
-                    // SizedBox(height: 16),
-                    // Text('Transaction Date'),
-                    // TextFormField(
-                    //   controller: _transactionDateController,
-                    //   validator: (value) {
-                    //     if (value == null || value.isEmpty) {
-                    //       return 'Please enter a transaction date';
-                    //     }
-                    //     return null;
-                    //   },
-                    // ),
+                    
                     const SizedBox(height: 16),
                     RichText(
                       text: const TextSpan(
@@ -768,13 +684,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: Text('Camera'),
                         ),
 
-                        //Begin Gallery Button
-                        // ElevatedButton(
-                        //   onPressed: getImageFromGallery,
-                        //   child: Text('Gallery'),
-                        // ),
-                        //End Gallery Button
-
                         ElevatedButton(
                           onPressed: getFileFromGallery,
                           child: Text('File'),
@@ -782,18 +691,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                     ),
                     SizedBox(height: 16),
-                    // Center(
-                    //   child: _image == null
-                    //       ? Text('No image selected.')
-                    //       : Image.file(_image!),
-                    // ),
-                    // Center(
-                    //   child: _file == null
-                    //       ? Text('No file selected.')
-                    //       : (isImageFile(_file!.path)
-                    //       ? Image.file(_file!)
-                    //       : Text('Selected File: ${path.basename(_file!.path)}')),
-                    // ),
+                    
                     Center(
                       child: _file == null
                           ? (_image == null
@@ -806,74 +704,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
                     SizedBox(height: 16),
-                    // Center(
-                    //   child: ElevatedButton(
-                    //     onPressed: () async {
-                    //       if (_formKey.currentState!.validate()) {
-                    //         // Upload the image to S3 and get its URL
-                    //         //final imageUrl = await uploadImageToS3(_image!);
-                    //         setState(() {
-                    //           _loading = true; // Show the loading indicator
-                    //         });
-                    //
-                    //         String? imageUrl;
-                    //         if (_image != null) {
-                    //           imageUrl = await uploadImageToS3(_image!);
-                    //         }
-                    //
-                    //         // Submit the form data and the image URL to the PHP API
-                    //         final url = 'https://appdata.netstoic.com/expense_rpt/adddata.php';
-                    //         final response = await http.post(Uri.parse(url), body: {
-                    //           'company': _company,
-                    //           'employee': _employeeController.text,
-                    //           'vendor': _vendorController.text,
-                    //           'trans_date': _transactionDateController.text,
-                    //           'business_purpose': _businessPurposeController,
-                    //           'item_desc': _itemDescController.text,
-                    //           'gl': _gl,
-                    //           'dollars': _dollarsController.text,
-                    //           'corp_cc': _corporateCreditCard,
-                    //           if (imageUrl != null) 'img_url': imageUrl, // Add img_url only if imageUrl is not null
-                    //           //'img_url': imageUrl,
-                    //           'status': _status,
-                    //         });
-                    //
-                    //         if (response.statusCode == 200) {
-                    //           setState(() {
-                    //             _loading = false; // Hide the loading indicator
-                    //           });
-                    //           // Clear the form fields
-                    //           //setState(() => _);
-                    //           //_employeeController.clear();
-                    //           _vendorController.clear();
-                    //           _transactionDateController.clear();
-                    //           _itemDescController.clear();
-                    //           _dollarsController.clear();
-                    //           setState(() {_image = null;});
-                    //           clearDropdowns();
-                    //           // _status = null;
-                    //           // _corporateCreditCard = null;
-                    //           // _businessPurposeController = null;
-                    //           // _statuses.clear();
-                    //           // _corporateCreditCards.clear();
-                    //           // _businessPurposes.clear();
-                    //
-                    //           ScaffoldMessenger.of(context).showSnackBar(
-                    //             const SnackBar(
-                    //               content: Text('Expense submitted successfully!'),
-                    //               duration: Duration(seconds: 3),
-                    //             ),
-                    //           );
-                    //
-                    //           print('Form data submitted successfully');
-                    //         } else {
-                    //           print('Error submitting form data: ${response.body}');
-                    //         }
-                    //       }
-                    //     },
-                    //     child: Text('Submit'),
-                    //   ),
-                    // ),
+                    
                   ],
                 ),
               ),
